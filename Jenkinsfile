@@ -1,7 +1,7 @@
 pipeline {
     agent any
     environment {
-        DOCKER_IMAGE = "your-dockerhub-username/calculator:latest"
+        DOCKER_IMAGE = "nitishnatikar360/calculator:latest"
     }
     stages {
         stage('Build with Maven') {
