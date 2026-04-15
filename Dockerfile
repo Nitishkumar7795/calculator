@@ -8,9 +8,7 @@ WORKDIR /usr/share/nginx/html
 RUN rm -rf ./*
 
 # Copy static files
-COPY index.html ./
-COPY style.css ./
-COPY script.js ./
+COPY src/main/resources/static/ .
 
 # Expose port 80
 EXPOSE 80
