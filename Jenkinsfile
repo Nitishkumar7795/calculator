@@ -40,10 +40,11 @@ pipeline {
             steps {
                 withCredentials([
                     string(credentialsId: 'k8s-sa-token', variable: 'K8S_TOKEN'),
-                    file(credentialsId: 'k8s-ca-crt', variable: 'K8S_CA_CRT')
+                    string(credentialsId: 'k8s-ca-crt-string', variable: 'K8S_CA_CRT_STRING')
                 ]) {
                     sh '''
-                    kubectl config set-cluster k8s --server=https://10.0.20.144:6443 --certificate-authority=$K8S_CA_CRT
+                    echo "$K8S_CA_CRT_STRING" > ca.crt
+                    kubectl config set-cluster k8s --server=https://10.0.20.144:6443 --certificate-authority=ca.crt
                     kubectl config set-credentials jenkins --token=$K8S_TOKEN
                     kubectl config set-context k8s --cluster=k8s --user=jenkins --namespace=jenprod
                     kubectl config use-context k8s
