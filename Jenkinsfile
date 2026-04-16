@@ -44,6 +44,9 @@ pipeline {
                 ]) {
                     sh '''
                     echo "$K8S_CA_CRT_STRING" > ca.crt
+                    echo "==== ca.crt debug output ===="
+                    cat -A ca.crt
+                    echo "==== end ca.crt debug output ===="
                     kubectl config set-cluster k8s --server=https://10.0.20.144:6443 --certificate-authority=ca.crt
                     kubectl config set-credentials jenkins --token=$K8S_TOKEN
                     kubectl config set-context k8s --cluster=k8s --user=jenkins --namespace=jenprod
