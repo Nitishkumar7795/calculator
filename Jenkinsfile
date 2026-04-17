@@ -37,21 +37,17 @@ pipeline {
             }
         }
         stage('Deploy to Kubernetes') {
-            steps {
-                withCredentials([
-                    string(credentialsId: 'k8s-sa-token', variable: 'K8S_TOKEN'),
-                    string(credentialsId: 'k8s-ca-crt-string', variable: 'K8S_CA_CRT_STRING')
-                ]) {
-                    writeFile file: 'ca.crt', text: env.K8S_CA_CRT_STRING
-                    sh '''
-                        kubectl config set-cluster k8s --server=https://10.0.20.144:6443 --certificate-authority=ca.crt
-                        kubectl config set-credentials jenkins --token=$K8S_TOKEN
-                        kubectl config set-context k8s --cluster=k8s --user=jenkins --namespace=jenprod
-                        kubectl config use-context k8s
-                        kubectl apply -f k8s.yaml -n jenprod
-                    '''
-                }
-            }
+    steps {
+        withCredentials([
+            string(credentialsId: 'k8s-sa-token', variable: 'K8S_TOKEN')
+        ]) {
+            sh '''
+                kubectl config set-cluster k8s --server=https://10.0.20.144:6443 --insecure-skip-tls-verify=true
+                kubectl config set-credentials jenkins --token=$K8S_TOKEN
+                kubectl config set-context k8s --cluster=k8s --user=jenkins --namespace=jenprod
+                kubectl config use-context k8s
+                kubectl apply -f k8s.yaml -n jenprod
+            '''
         }
     }
 }
